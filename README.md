@@ -7,8 +7,12 @@ HomeAssistant Component TheOwls RPI AudioPlayer Control
 Install this integration in `custom_components/theowls-audioplayer`, then add it
 from **Settings > Devices & services > Add integration**. Enter the hostname
 only (no scheme, port, or path) and a polling interval in seconds; the default
-is 60 seconds. Use the integration's **Configure** action to change these values
-later. The endpoint is built as `http://<host>:8007/status`.
+is 60 seconds. Add the integration again for each additional player, using that
+player's hostname. Each hostname creates a separate Home Assistant device, and
+the same hostname cannot be added twice. Use an entry's **Configure** action to
+change its polling interval later. Remove and re-add an entry to change its
+hostname. The endpoint is built as
+`http://<host>:8007/status`.
 
 The legacy YAML platform is also supported:
 

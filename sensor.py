@@ -12,6 +12,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
@@ -22,10 +23,10 @@ from .const import (
     SYSTEM_PROTOCOL,
     SYSTEM_PORT,
     SYSTEM_STATUS_PATH,
-    DEFAULT_SCAN_INTERVAL_SECONDS,
+    DEFAULT_STATUS_INTERVAL_SECONDS
 )
 
-SCAN_INTERVAL = timedelta(seconds=DEFAULT_SCAN_INTERVAL_SECONDS)
+SCAN_INTERVAL = timedelta(seconds=DEFAULT_STATUS_INTERVAL_SECONDS)
 
 
 
@@ -82,7 +83,7 @@ async def _async_add_status_sensor(
         update_interval=scan_interval,
     )
     await coordinator.async_refresh()
-    async_add_entities([AudioPlayerStatusSensor(coordinator)])
+    async_add_entities([AudioPlayerStatusSensor(coordinator, host)])
 
 
 class AudioPlayerStatusSensor(SensorEntity):
@@ -90,10 +91,17 @@ class AudioPlayerStatusSensor(SensorEntity):
 
     _attr_has_entity_name = True
     _attr_name = "Status"
-    _attr_unique_id = "audioplayer_status"
 
-    def __init__(self, coordinator: DataUpdateCoordinator[Any]) -> None:
+    def __init__(self, coordinator: DataUpdateCoordinator[Any], host: str) -> None:
         self.coordinator = coordinator
+        device_id = host.strip().lower()
+        self._attr_unique_id = f"{device_id}_status"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, device_id)},
+            name=host,
+            manufacturer="TheOwls",
+            model="RPI AudioPlayer",
+        )
 
     @property
     def native_value(self) -> str | int | float:

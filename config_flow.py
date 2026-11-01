@@ -9,34 +9,36 @@ from homeassistant.helpers import config_validation as cv
 
 from .const import (
     DOMAIN,
-    DEFAULT_SCAN_INTERVAL_SECONDS,
-    MIN_SCAN_INTERVAL_SECONDS,
-    MAX_SCAN_INTERVAL_SECONDS,
+    DEFAULT_STATUS_INTERVAL_SECONDS,
+    MIN_STATUS_INTERVAL_SECONDS,
+    MAX_STATUS_INTERVAL_SECONDS,
 )
 
 
-def _config_schema(defaults: dict[str, object] | None = None) -> vol.Schema:
+def _config_schema(
+    defaults: dict[str, object] | None = None, *, include_host: bool = True
+) -> vol.Schema:
     """Build the setup/options form schema."""
     defaults = defaults or {}
-    return vol.Schema(
-        {
-            vol.Required(CONF_HOST, default=defaults.get(CONF_HOST, "")): vol.All(
-                cv.string, vol.Length(min=1)
+    schema: dict[vol.Marker, object] = {
+        vol.Required(
+            CONF_SCAN_INTERVAL,
+            default=defaults.get(
+                CONF_SCAN_INTERVAL, DEFAULT_STATUS_INTERVAL_SECONDS
             ),
-            vol.Required(
-                CONF_SCAN_INTERVAL,
-                default=defaults.get(
-                    CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL_SECONDS
-                ),
-            ): vol.All(
-                vol.Coerce(int),
-                vol.Range(
-                    min=MIN_SCAN_INTERVAL_SECONDS,
-                    max=MAX_SCAN_INTERVAL_SECONDS,
-                ),
+        ): vol.All(
+            vol.Coerce(int),
+            vol.Range(
+                min=MIN_STATUS_INTERVAL_SECONDS,
+                max=MAX_STATUS_INTERVAL_SECONDS,
             ),
-        }
-    )
+        ),
+    }
+    if include_host:
+        schema[
+            vol.Required(CONF_HOST, default=defaults.get(CONF_HOST, ""))
+        ] = vol.All(cv.string, str.strip, vol.Length(min=1))
+    return vol.Schema(schema)
 
 
 class TheOwlsAudioPlayerConfigFlow(
@@ -50,13 +52,13 @@ class TheOwlsAudioPlayerConfigFlow(
         self, user_input: dict[str, object] | None = None
     ) -> config_entries.FlowResult:
         """Show the initial configuration form."""
-        await self.async_set_unique_id(DOMAIN)
-        self._abort_if_unique_id_configured()
-
         if user_input is not None:
+            host = str(user_input[CONF_HOST]).strip().lower()
+            await self.async_set_unique_id(host)
+            self._abort_if_unique_id_configured()
             return self.async_create_entry(
-                title="TheOwls RPI AudioPlayer",
-                data=user_input,
+                title=host,
+                data={**user_input, CONF_HOST: host},
             )
 
         return self.async_show_form(
@@ -89,6 +91,7 @@ class TheOwlsAudioPlayerOptionsFlow(config_entries.OptionsFlow):
         return self.async_show_form(
             step_id="init",
             data_schema=_config_schema(
-                {**self.config_entry.data, **self.config_entry.options}
+                {**self.config_entry.data, **self.config_entry.options},
+                include_host=False,
             ),
         )
