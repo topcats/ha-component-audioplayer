@@ -17,10 +17,16 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
 )
+from .const import (
+    DOMAIN,
+    SYSTEM_PROTOCOL,
+    SYSTEM_PORT,
+    SYSTEM_STATUS_PATH,
+    DEFAULT_SCAN_INTERVAL_SECONDS,
+)
 
-SCAN_INTERVAL = timedelta(minutes=1)
-STATUS_PORT = 8007
-STATUS_PATH = "/status"
+SCAN_INTERVAL = timedelta(seconds=DEFAULT_SCAN_INTERVAL_SECONDS)
+
 
 
 async def async_setup_entry(
@@ -58,7 +64,7 @@ async def _async_add_status_sensor(
 ) -> None:
     """Create the coordinator and status sensor."""
     session = async_get_clientsession(hass)
-    status_url = f"http://{host}:{STATUS_PORT}{STATUS_PATH}"
+    status_url = f"{SYSTEM_PROTOCOL}://{host}:{SYSTEM_PORT}{SYSTEM_STATUS_PATH}"
 
     async def async_update_data() -> Any:
         try:

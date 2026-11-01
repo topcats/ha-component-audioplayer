@@ -7,11 +7,12 @@ from homeassistant.const import CONF_HOST, CONF_SCAN_INTERVAL
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 
-from . import DOMAIN
-
-DEFAULT_SCAN_INTERVAL_SECONDS = 60
-MIN_SCAN_INTERVAL_SECONDS = 10
-MAX_SCAN_INTERVAL_SECONDS = 86400
+from .const import (
+    DOMAIN,
+    DEFAULT_SCAN_INTERVAL_SECONDS,
+    MIN_SCAN_INTERVAL_SECONDS,
+    MAX_SCAN_INTERVAL_SECONDS,
+)
 
 
 def _config_schema(defaults: dict[str, object] | None = None) -> vol.Schema:
