@@ -14,3 +14,17 @@ CONF_DEVICE_NAME = "device_name"
 CONF_STATUS_INTERVAL = "status_interval"
 
 SUPPORTED_PLATFORMS = ["sensor"]
+
+
+MANUAL_MODE_LABELS = {
+    0: "Normal running",
+    1: "Full stop; play nothing, schedule paused",
+    2: "Stop; play nothing, resume at next schedule change",
+    3: "Stop; play nothing, resume at next day",
+    11: "Play Source; schedule paused",
+    12: "Play Source; resume at next schedule change",
+    13: "Play Source; resume at next day",
+    21: "Play Url; schedule paused",
+    22: "Play Url; resume at next schedule change",
+    23: "Play Url; resume at next day",
+}

@@ -3,7 +3,7 @@ from __future__ import annotations
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.const import CONF_HOST, CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_HOST
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 
@@ -12,6 +12,8 @@ from .const import (
     DEFAULT_STATUS_INTERVAL_SECONDS,
     MIN_STATUS_INTERVAL_SECONDS,
     MAX_STATUS_INTERVAL_SECONDS,
+    CONF_DEVICE_NAME,
+    CONF_STATUS_INTERVAL
 )
 
 
@@ -22,9 +24,9 @@ def _config_schema(
     defaults = defaults or {}
     schema: dict[vol.Marker, object] = {
         vol.Required(
-            CONF_SCAN_INTERVAL,
+            CONF_STATUS_INTERVAL,
             default=defaults.get(
-                CONF_SCAN_INTERVAL, DEFAULT_STATUS_INTERVAL_SECONDS
+                CONF_STATUS_INTERVAL, DEFAULT_STATUS_INTERVAL_SECONDS
             ),
         ): vol.All(
             vol.Coerce(int),

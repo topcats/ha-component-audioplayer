@@ -9,8 +9,7 @@ import homeassistant.helpers.config_validation as cv
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_HOST, CONF_SCAN_INTERVAL
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -23,7 +22,10 @@ from .const import (
     SYSTEM_PROTOCOL,
     SYSTEM_PORT,
     SYSTEM_STATUS_PATH,
-    DEFAULT_STATUS_INTERVAL_SECONDS
+    DEFAULT_STATUS_INTERVAL_SECONDS,
+    MANUAL_MODE_LABELS,
+    CONF_HOST,
+    CONF_SCAN_INTERVAL
 )
 
 SCAN_INTERVAL = timedelta(seconds=DEFAULT_STATUS_INTERVAL_SECONDS)
@@ -111,6 +113,8 @@ class AudioPlayerStatusSensor(SensorEntity):
             for key in ("status", "state", "mode"):
                 value = data.get(key)
                 if isinstance(value, (str, int, float)):
+                    if key == "mode" and type(value) is int:
+                        return MANUAL_MODE_LABELS.get(value, value)
                     return value
         return "online"
 

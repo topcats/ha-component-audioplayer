@@ -25,4 +25,5 @@ sensor:
 
 For YAML, `scan_interval` accepts a Home Assistant time period and defaults to
 one minute. The sensor's state uses the JSON `status`, `state`, or `mode` field
-when present, and the complete JSON object is available as state attributes.
+when present. Known manual mode values are shown using their documented text;
+the complete JSON object remains available as state attributes.
