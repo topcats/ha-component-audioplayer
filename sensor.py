@@ -9,7 +9,8 @@ import homeassistant.helpers.config_validation as cv
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.const import CONF_HOST, CONF_SCAN_INTERVAL
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -24,8 +25,7 @@ from .const import (
     SYSTEM_STATUS_PATH,
     DEFAULT_STATUS_INTERVAL_SECONDS,
     MANUAL_MODE_LABELS,
-    CONF_HOST,
-    CONF_SCAN_INTERVAL
+    CONF_STATUS_INTERVAL,
 )
 
 SCAN_INTERVAL = timedelta(seconds=DEFAULT_STATUS_INTERVAL_SECONDS)
@@ -42,7 +42,7 @@ async def async_setup_entry(
     await _async_add_status_sensor(
         hass,
         config[CONF_HOST],
-        timedelta(seconds=config[CONF_SCAN_INTERVAL]),
+        timedelta(seconds=config[CONF_STATUS_INTERVAL]),
         async_add_entities,
     )
 

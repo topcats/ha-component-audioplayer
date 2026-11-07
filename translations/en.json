@@ -6,7 +6,7 @@
         "description": "Enter the hostname only. The integration uses HTTP on port 8007 at /status.",
         "data": {
           "host": "Hostname",
-          "scan_interval": "Polling interval (seconds)"
+          "status_interval": "Polling interval (seconds)"
         }
       }
     },
@@ -21,7 +21,7 @@
         "description": "Enter the hostname only. The integration uses HTTP on port 8007 at /status.",
         "data": {
           "host": "Hostname",
-          "scan_interval": "Polling interval (seconds)"
+          "status_interval": "Polling interval (seconds)"
         }
       }
     }
