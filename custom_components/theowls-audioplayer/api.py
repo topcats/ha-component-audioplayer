@@ -39,10 +39,19 @@ class AudioPlayerApi:
         host: str,
     ) -> None:
         self._session = session
+        # Build a base URL for the player
         normalized_host = host.strip().strip("[]")
         if ":" in normalized_host:
             normalized_host = f"[{normalized_host}]"
         self._base_url = f"http://{normalized_host}:{PORT}"
+        # Save Host Name
+        self._host_name = host.strip().strip("[]").split('.')[0].upper()
+
+    @property
+    def name(self) -> str | None:
+        """Return the name of the current configured host."""
+        return self._host_name if hasattr(self, "_host_name") else None
+
 
     async def async_get_status(self) -> dict[str, Any]:
         """Return the current player status."""

@@ -42,7 +42,9 @@ class AudioPlayerEntity(CoordinatorEntity[AudioPlayerCoordinator], MediaPlayerEn
     )
 
     def __init__(
-        self, coordinator: AudioPlayerCoordinator, entry: ConfigEntry
+        self,
+        coordinator: AudioPlayerCoordinator,
+        entry: ConfigEntry
     ) -> None:
         super().__init__(coordinator)
         self._entry = entry
@@ -57,55 +59,80 @@ class AudioPlayerEntity(CoordinatorEntity[AudioPlayerCoordinator], MediaPlayerEn
     @property
     def state(self) -> MediaPlayerState:
         """Return the playback state represented by the status payload."""
-        mode = self.coordinator.status.get("mode")
-        if _as_int(mode) in {1, 2, 3}:
-            return MediaPlayerState.OFF
-        if (
-            self.coordinator.status.get("aPlayer") == "State.Playing"
-            or self.coordinator.status.get("aPlayerList") == "State.Playing"
-        ):
-            return MediaPlayerState.PLAYING
-        return MediaPlayerState.IDLE
+        try:
+            mode = self.coordinator.status.get("mode")
+            if _as_int(mode) in {1, 2, 3}:
+                return MediaPlayerState.OFF
+            if (
+                self.coordinator.status.get("aPlayer") == "State.Playing"
+                or self.coordinator.status.get("aPlayerList") == "State.Playing"
+            ):
+                return MediaPlayerState.PLAYING
+            return MediaPlayerState.IDLE
+        except Exception:  # pylint: disable=broad-except
+            return MediaPlayerState.UNKNOWN
 
     @property
     def source(self) -> str | None:
         """Return the name of the current configured source."""
-        current_source = self.coordinator.status.get("source")
-        if isinstance(current_source, dict):
-            name = current_source.get("name")
-            return name if isinstance(name, str) else None
-        return None
+        try:
+            current_source = self.coordinator.status.get("source")
+            if current_source is not None and isinstance(current_source, dict):
+                name = current_source.get("name")
+                return name if isinstance(name, str) else None
+            return None
+        except Exception:  # pylint: disable=broad-except
+            return None
 
     @property
     def source_list(self) -> list[str]:
         """Return the available source names."""
-        return [str(source["name"]) for source in self.coordinator.sources]
+        try:
+            return [str(source["name"]) for source in self.coordinator.sources]
+        except Exception:  # pylint: disable=broad-except
+            return []
 
     @property
     def media_title(self) -> str | None:
         """Return the current media title or source name."""
-        title = self.coordinator.status.get("title")
-        if isinstance(title, str) and title:
-            return title
-        return self.source
+        try:
+            # Use Source Name if available as the Title
+            current_source = self.source
+            if current_source is not None:
+                return current_source
+            # Else use the title tag if available
+            title = self.coordinator.status.get("title")
+            if isinstance(title, str) and title:
+                return title
+            return None
+        except Exception:  # pylint: disable=broad-except
+            return None
 
     @property
     def media_artist(self) -> str | None:
         """Return the current programme subtitle."""
-        subtitle = self.coordinator.status.get("subtitle")
-        return subtitle if isinstance(subtitle, str) and subtitle else None
+        try:
+            subtitle = self.coordinator.status.get("subtitle")
+            return subtitle if isinstance(subtitle, str) and subtitle else None
+        except Exception:  # pylint: disable=broad-except
+            return None
 
     @property
     def media_image_url(self) -> str | None:
         """Return the current media image, falling back to the source image."""
-        image = self.coordinator.status.get("image")
-        if isinstance(image, str) and image:
-            return image
-        current_source = self.coordinator.status.get("source")
-        if isinstance(current_source, dict):
-            source_image = current_source.get("image")
-            return source_image if isinstance(source_image, str) else None
-        return None
+        try:
+            # First check main image tag, and return if valid
+            image = self.coordinator.status.get("image")
+            if image is not None and isinstance(image, str) and image:
+                return image
+            # If no main image, check the source image and return if valid
+            current_source = self.coordinator.status.get("source")
+            if current_source is not None and  isinstance(current_source, dict):
+                source_image = current_source.get("image")
+                return source_image if isinstance(source_image, str) else None
+            return None
+        except Exception:  # pylint: disable=broad-except
+            return None
 
     @property
     def media_position(self) -> float | None:
