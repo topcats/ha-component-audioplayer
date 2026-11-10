@@ -21,7 +21,10 @@ async def async_setup_entry(
     """Set up manual mode and source selectors."""
     coordinator: AudioPlayerCoordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_entities(
-        [ManualModeSelect(coordinator, entry), ManualSourceSelect(coordinator, entry)]
+        [
+            ManualModeSelect(coordinator, entry, "manual_mode"),
+            ManualSourceSelect(coordinator, entry, "manual_source"),
+        ]
     )
 
 
