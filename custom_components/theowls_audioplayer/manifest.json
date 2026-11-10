@@ -1,5 +1,5 @@
 {
-  "domain": "theowls-audioplayer",
+  "domain": "theowls_audioplayer",
   "name": "TheOwls AudioPlayer",
   "codeowners": ["@topcats"],
   "config_flow": true,
