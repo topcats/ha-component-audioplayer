@@ -1,5 +1,5 @@
 {
-  "domain": "theowls-audioplayer",
+  "domain": "theowls_audioplayer",
   "name": "TheOwls AudioPlayer",
   "codeowners": ["@topcats"],
   "config_flow": true,
@@ -7,5 +7,5 @@
   "integration_type": "device",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/topcats/ha-component-audioplayer/issues",
-  "version": "0.1.1"
+  "version": "0.1.2"
 }

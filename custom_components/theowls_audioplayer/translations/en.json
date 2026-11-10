@@ -1,0 +1,38 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "host": "Host"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to the player.",
+      "invalid_host": "Enter a host name or IP address without a scheme or path.",
+      "invalid_response": "The player returned an invalid configuration.",
+      "already_configured": "This player is already configured."
+    }
+  },
+  "entity": {
+    "select": {
+      "manual_mode": {
+        "name": "Manual mode"
+      },
+      "manual_source": {
+        "name": "Manual source"
+      }
+    },
+    "text": {
+      "manual_url": {
+        "name": "Manual URL"
+      },
+      "manual_title": {
+        "name": "Manual title"
+      },
+      "manual_image": {
+        "name": "Manual image"
+      }
+    }
+  }
+}
