@@ -1,4 +1,4 @@
-# TheOwls AudioPlayer (Home Assistant Integration)
+# ![Logo](https://raw.githubusercontent.com/topcats/ha-component-audioplayer/main/custom_components/theowls_audioplayer/brand/icon.png){height=24} TheOwls AudioPlayer (Home Assistant Integration)
 
 HomeAssistant Component TheOwls RPI AudioPlayer Control
 
